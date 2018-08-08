@@ -1,4 +1,4 @@
-package ex02_01;
+package jpl.ch02.ex01;
 
 public class Vehicle {
 	/**　 現在のスピード */
