@@ -1,7 +1,5 @@
 package jpl.ch02.ex18;
 
-import jpl.ch02.ex17.Vehicle;
-
 public class Vehicle {
 	/**　 現在のスピード */
 	private double speed;
