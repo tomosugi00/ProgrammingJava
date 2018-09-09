@@ -1,12 +1,12 @@
-package jpl.ch03.ex12;
+package jpl.ch04.ex02;
 
-public abstract class SortDouble
+abstract class SortHarness
 {
-	private double[] values;
+	private Object[] values;
 	private final SortMetrics curMetrics = new SortMetrics();
 	
 	/** 全ソートをするために呼び出される */
-	public final SortMetrics sort(double[] data)
+	public final SortMetrics sort(Object[] data)
 	{
 		values = data;
 		curMetrics.init();
@@ -26,33 +26,17 @@ public abstract class SortDouble
 	}
 	
 	/** 拡張したクラスが要素を調べるため */
-	protected final double probe(int i)
+	protected final Object probe(int i)
 	{
 		curMetrics.ProbeCntPlus();
 		return values[i];
-	}
-	
-	/** 拡張したクラスが要素を比較するため */
-	protected final int compare(int i, int j)
-	{
-		curMetrics.CompareCntPlus();
-		double d1 = values[i];
-		double d2 = values[j];
-		if(d1 == d2)
-		{
-			return 0;
-		}
-		else
-		{
-			return (d1<d2 ? -1 : 1);
-		}
 	}
 	
 	/** 拡張したクラスが要素を交換するため */
 	protected final void swap(int i, int j)
 	{
 		curMetrics.SwapCntPlus();
-		double tmp = values[i];
+		Object tmp = values[i];
 		values[i] = values[j];
 		values[j] = tmp;
 	}
