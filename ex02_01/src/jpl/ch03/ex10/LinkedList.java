@@ -1,14 +1,12 @@
 package jpl.ch03.ex10;
 
-import jpl.ch03.ex09.Garage;
-
 public class LinkedList implements Cloneable
 {
 	private LinkedList preObject;
 	private LinkedList nextObject;
 	private Object value;
 	
-	/**@ ©•ª‚Ì‘O‚Ì—v‘f‚ğŠi”[*/
+	/**ï¿½@ ï¿½ï¿½ï¿½ï¿½ï¿½Ì‘Oï¿½Ì—vï¿½fï¿½ï¿½ï¿½iï¿½[*/
 	LinkedList(LinkedList preObject)
 	{
 		this.preObject = preObject;
@@ -37,7 +35,7 @@ public class LinkedList implements Cloneable
 	public int GetListNum() {
 		int pre = this.getPreNum();
 		int next = this.getNextNum();
-		System.out.println("‘O‚Ì—v‘f” : "+pre+", Œã‚Ì—v‘f” : "+next);
+		System.out.println("ï¿½Oï¿½Ì—vï¿½fï¿½ï¿½ : "+pre+", ï¿½ï¿½Ì—vï¿½fï¿½ï¿½ : "+next);
 		return 1 + pre + next;
 	}
 	public int getPreNum() {
@@ -57,7 +55,7 @@ public class LinkedList implements Cloneable
 		return count;
 	}
 	
-	/**@ Ÿ‚Ì—v‘f‚ğŠi”[ */
+	/**ï¿½@ ï¿½ï¿½ï¿½Ì—vï¿½fï¿½ï¿½ï¿½iï¿½[ */
 	public void GetNextObject(Object value)
 	{
 		this.nextObject = new LinkedList(this,value);
@@ -85,9 +83,9 @@ public class LinkedList implements Cloneable
 		System.out.println(one_copy);
 		
 		//int count = two.GetListNum();
-		//System.out.println("‡Œv” = " + count );
+		//System.out.println("ï¿½ï¿½ï¿½vï¿½ï¿½ = " + count );
 		//count = five.GetListNum();
-		//System.out.println("‡Œv” = " + count );
+		//System.out.println("ï¿½ï¿½ï¿½vï¿½ï¿½ = " + count );
 		
 	}
 	
