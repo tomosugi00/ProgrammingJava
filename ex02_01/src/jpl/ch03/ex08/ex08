@@ -1,0 +1,4 @@
+Vehicle型もPassengerVehicle型も単純なデータ型しか
+持たないため、単純にCloneableを実装するだけでよいと考える。
+static変数に関してもcloneは最初にクラスのコンストラクタを呼ぶため、
+IDの加算処理は行われると考える。
