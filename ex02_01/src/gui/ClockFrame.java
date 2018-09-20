@@ -51,7 +51,7 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
         
         //ダイアログ
         this.dialog = new ClockDialog(this,fontName,fontStyle,fontSize,fontColor,backgroundColor);
-        dialog.setSize(200,200);
+        dialog.setSize(300,300);
         dialog.setVisible(false);
 	}
 	
