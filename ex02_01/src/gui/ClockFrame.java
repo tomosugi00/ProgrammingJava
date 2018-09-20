@@ -63,13 +63,20 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
     }
 	
 	//文字盤のフォント・サイズなどはこちらで行う
+    //ダブルバッファリングを行う
     public void paint(Graphics g)
     {
     	/* なぜか最初2回ほどNullPointerExceptionが出る */
     	/* 起動時すぐは時間を取得できない？ */
     	try
     	{
-    		g.drawString(clockDial.getClockTime(),100,100);
+    		//描画処理
+    		Dimension size = getSize();
+    		Image back = createImage(size.width, size.height);
+    		Graphics buffer = back.getGraphics();
+    		buffer.drawString(clockDial.getClockTime(),100,100);
+    		//描画
+    		g.drawImage(back, 0, 0, this);
     	}
     	catch(NullPointerException e)
     	{
