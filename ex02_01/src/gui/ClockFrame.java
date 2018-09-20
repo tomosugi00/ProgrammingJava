@@ -9,12 +9,14 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
 {
 	/** 時計の文字盤 */
 	private ClockDial clockDial;
-	
+	/* メニューバー */
 	private MenuBar menuBar;
 	private Menu menuFile;
 	private MenuItem itemExit;
 	private Menu menuEdit;
 	private MenuItem itemEdit;
+	/* ダイアログ */
+	private ClockDialog dialog;
 	
 	public ClockFrame(int width, int height)
 	{
@@ -40,6 +42,10 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
         itemEdit.addActionListener(this);
         menuEdit.add(itemEdit);
         
+        //ダイアログ
+        this.dialog = new ClockDialog(this);
+        dialog.setSize(200,200);
+        dialog.setVisible(false);
 	}
 	
 	public void startClock()
@@ -50,6 +56,7 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
     public void run()
     {
         while(true){
+        	  //this.resize();
               repaint();
               try
               {
@@ -93,7 +100,7 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
 		}
 		else if(e.getSource() == itemEdit)
 		{
-			System.out.println("editがクリックされました");
+			dialog.setVisible(true);
 		}
 		else
 		{
