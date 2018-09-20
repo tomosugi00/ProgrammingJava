@@ -110,23 +110,58 @@ public class ClockDialog extends Dialog implements ItemListener
 	{
 		if (e.getSource() == choiceFontName)
 		{
-			
+			if (choiceFontName.getSelectedIndex() == 0)
+			{
+				this.fontName = "Dialog";
+			}
+			if (choiceFontName.getSelectedIndex() == 1)
+			{
+				this.fontName = "DialogInput";
+			}
 		}
 		else if(e.getSource() == choiceFontStyle)
 		{
-			
+			if (choiceFontStyle.getSelectedIndex() == 0)
+			{
+				this.fontStyle = Font.PLAIN;
+			}
+			if (choiceFontStyle.getSelectedIndex() == 1)
+			{
+				this.fontStyle = Font.BOLD;
+			}
 		}
 		else if(e.getSource() == choiceFontSize)
 		{
-			
+			if (choiceFontSize.getSelectedIndex() == 0)
+			{
+				this.fontSize = 14;
+			}
+			if (choiceFontSize.getSelectedIndex() == 1)
+			{
+				this.fontSize = 24;
+			}
 		}
 		else if(e.getSource() == choiceFontColor)
 		{
-			
+			if (choiceFontColor.getSelectedIndex() == 0)
+			{
+				this.fontColor = Color.BLACK;
+			}
+			if (choiceFontColor.getSelectedIndex() == 1)
+			{
+				this.fontColor = Color.RED;
+			}
 		}
 		else if(e.getSource() == choiceBackgroundColor)
 		{
-			
+			if (choiceBackgroundColor.getSelectedIndex() == 0)
+			{
+				this.backgroundColor = Color.WHITE;
+			}
+			if (choiceBackgroundColor.getSelectedIndex() == 1)
+			{
+				this.backgroundColor = Color.YELLOW;
+			}
 		}
 	}
 }
