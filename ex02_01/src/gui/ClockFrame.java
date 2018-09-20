@@ -113,6 +113,12 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
 		else if(e.getSource() == itemEdit)
 		{
 			dialog.setVisible(true);
+			
+			this.fontName = this.dialog.getFontName();
+			this.fontStyle = this.dialog.getFontStyle();
+			this.fontSize = this.dialog.getFontSize();
+			this.fontColor = this.dialog.getFontColor();
+			this.backgroundColor = this.dialog.getBackgroundColor();
 		}
 		else
 		{
