@@ -9,6 +9,12 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
 {
 	/** 時計の文字盤 */
 	private ClockDial clockDial;
+	/* 文字ステータス */
+	private String fontName = "Dialog";
+	private int fontStyle = Font.PLAIN;
+	private int fontSize = 14;
+	private Color fontColor = Color.BLACK;
+	private Color backgroundColor = Color.WHITE;
 	/* メニューバー */
 	private MenuBar menuBar;
 	private Menu menuFile;
@@ -17,6 +23,7 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
 	private MenuItem itemEdit;
 	/* ダイアログ */
 	private ClockDialog dialog;
+	
 	
 	public ClockFrame(int width, int height)
 	{
@@ -43,7 +50,7 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
         menuEdit.add(itemEdit);
         
         //ダイアログ
-        this.dialog = new ClockDialog(this);
+        this.dialog = new ClockDialog(this,fontName,fontStyle,fontSize,fontColor,backgroundColor);
         dialog.setSize(200,200);
         dialog.setVisible(false);
 	}
@@ -77,10 +84,15 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
     	/* 起動時すぐは時間を取得できない？ */
     	try
     	{
-    		//描画処理
+    		//描画準備(ダブルバッファリング)
     		Dimension size = getSize();
     		Image back = createImage(size.width, size.height);
     		Graphics buffer = back.getGraphics();
+    		//描画処理
+    		buffer.setColor(backgroundColor);
+    		buffer.fillRect(0,0,size.width-1,size.height-1);
+    		buffer.setFont(new Font(this.fontName,this.fontStyle,this.fontSize));
+    		buffer.setColor(fontColor);
     		buffer.drawString(clockDial.getClockTime(),100,100);
     		//描画
     		g.drawImage(back, 0, 0, this);
