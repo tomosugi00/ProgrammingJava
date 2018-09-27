@@ -88,12 +88,20 @@ public class ClockFrame extends Frame implements Runnable, ActionListener
     		Dimension size = getSize();
     		Image back = createImage(size.width, size.height);
     		Graphics buffer = back.getGraphics();
+    		Font f = new Font(this.fontName,this.fontStyle,this.fontSize);
+    		FontMetrics fm = buffer.getFontMetrics(f);
+    		
     		//描画処理
     		buffer.setColor(backgroundColor);
     		buffer.fillRect(0,0,size.width-1,size.height-1);
-    		buffer.setFont(new Font(this.fontName,this.fontStyle,this.fontSize));
+    		buffer.setFont(f);
     		buffer.setColor(fontColor);
-    		buffer.drawString(clockDial.getClockTime(),100,100);
+    		String nowTime = clockDial.getClockTime();
+    		int fontWidth = fm.stringWidth(nowTime);
+    		int fontHeight = fm.getHeight();
+    		buffer.drawString(clockDial.getClockTime(),10,70);
+    		//リサイズ
+    		this.setSize(10+fontWidth,70+fontHeight);
     		//描画
     		g.drawImage(back, 0, 0, this);
     	}
