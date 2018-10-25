@@ -1,0 +1,35 @@
+
+3 << 2L -1
+= 6
+
+(3L << 2) - 1
+= 11
+
+10 < 12 == 6 > 17
+= false
+
+10 << 12 == 6 >> 17
+= false
+
+
+13.5e-1 % Float.POSITIVE_INFINITY
+= 0
+
+
+Float.POSITIVE_INFINITY + Double.NEGATIVE_INFINITY
+= NAN
+
+Double.POSITIVE_INFINITY - Float.NEGATIVE_INFINITY
+= +POSITIVDE_INFINITY
+
+0.0 / -0.0 == -0.0 / 0.0
+= false
+
+Integer.MAX_VALUE + Integer.MIN_VALUE
+= 0
+
+Long.MAX_VALUE + 5
+= Long.MAX_VALUE
+
+(short) 5 * (byte) 10
+= 2
