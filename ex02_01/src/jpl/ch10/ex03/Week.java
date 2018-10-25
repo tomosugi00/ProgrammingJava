@@ -1,4 +1,4 @@
-package jpl.ch06.ex01;
+package jpl.ch10.ex03;
 
 public enum Week
 {
