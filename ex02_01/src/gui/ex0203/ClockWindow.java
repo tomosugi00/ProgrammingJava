@@ -15,9 +15,9 @@ public class ClockWindow extends JWindow
 		this.setBackground(Color.BLACK);
 		this.setSize(200, 100);
 		// ドラッグ機能
-		DragWindowListener dargWindowListener = new DragWindowListener();
-		this.addMouseListener(dargWindowListener);
-		this.addMouseMotionListener(dargWindowListener);
+		ClockMouseListener clockMouseListener = new ClockMouseListener();
+		this.addMouseListener(clockMouseListener);
+		this.addMouseMotionListener(clockMouseListener);
 		
 		panel = new ClockPanel();
 		add(panel);
