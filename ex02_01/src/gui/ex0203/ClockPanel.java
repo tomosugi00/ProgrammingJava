@@ -13,26 +13,25 @@ public class ClockPanel extends JPanel implements ActionListener
 	
 	public ClockPanel()
     {
-        setBackground(Color.WHITE);
-        new Timer(TIME, this).start();
-    }
+		setBackground(Color.WHITE);
+		new Timer(TIME, this).start();
+	}
 
     public void actionPerformed(ActionEvent actionEvent)
     {
-        repaint();
+    	repaint();
     }
 
     /** 描画処理 */
     public void paintComponent(Graphics g)
     {
-        super.paintComponent(g);
-        // 描画内容
-        String dial = ClockDial.getClockTime();
-        // 描画位置
-        FontMetrics fm = g.getFontMetrics();
-        int pointX = (getWidth() - fm.stringWidth(dial)) / 2;
-        int pointY =  (getHeight() + fm.getAscent() - fm.getDescent()) / 2;
-        g.drawString(dial, pointX,pointY);
+    	super.paintComponent(g);
+    	// 描画内容
+    	String dial = ClockDial.getClockTime();
+    	// 描画位置
+    	FontMetrics fm = g.getFontMetrics();
+    	int pointX = (getWidth() - fm.stringWidth(dial)) / 2;
+    	int pointY =  (getHeight() + fm.getAscent() - fm.getDescent()) / 2;
+    	g.drawString(dial, pointX,pointY);
     }
-
 }

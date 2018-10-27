@@ -12,14 +12,15 @@ public class ClockWindow extends JWindow
 	public ClockWindow()
 	{
 		Toolkit.getDefaultToolkit().setDynamicLayout(true);
-        this.setBackground(Color.BLACK);
-        this.setSize(200, 100);
-        DragWindowListener dargWindowListener = new DragWindowListener();
-        this.addMouseListener(dargWindowListener);
-        this.addMouseMotionListener(dargWindowListener);
-        
-        panel = new ClockPanel();
-        add(panel);
-        this.setVisible(true);
+		this.setBackground(Color.BLACK);
+		this.setSize(200, 100);
+		// ドラッグ機能
+		DragWindowListener dargWindowListener = new DragWindowListener();
+		this.addMouseListener(dargWindowListener);
+		this.addMouseMotionListener(dargWindowListener);
+		
+		panel = new ClockPanel();
+		add(panel);
+		this.setVisible(true);
 	}
 }
