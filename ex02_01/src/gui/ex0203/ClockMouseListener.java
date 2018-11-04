@@ -45,10 +45,10 @@ public class ClockMouseListener extends MouseAdapter
 	private void GetLocation(MouseEvent event)
 	{
 		if (window == null) {
-			Object o = event.getSource();
-			if (o instanceof JWindow)
+			Object obj = event.getSource();
+			if (obj instanceof JWindow)
 			{
-				window = (JWindow) o;
+				window = (JWindow) obj;
 			}
 		}
 		startPt.setLocation(event.getPoint());
