@@ -36,8 +36,9 @@ public class ClockFrame extends JFrame implements ActionListener
 		// なぜかなくても消せる
 		 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		// パネル
-		panel = new ClockPanel();
+		 // パネル
+		 // 初期化がダサい
+		panel = new ClockPanel(fontName,fontStyle,fontSize,fontColor,backgroundColor);
 		add(panel);
 		this.setVisible(true);
 		//メニュー
@@ -70,18 +71,33 @@ public class ClockFrame extends JFrame implements ActionListener
 		}
 		else if(e.getSource() == itemEdit)
 		{
-			dialog.setVisible(true);
-			
-			// ダイアログの編集状態を取得
-			this.fontName = this.dialog.getFontName();
-			this.fontStyle = this.dialog.getFontStyle();
-			this.fontSize = this.dialog.getFontSize();
-			this.fontColor = this.dialog.getFontColor();
-			this.backgroundColor = this.dialog.getBackgroundColor();
+			setDialogConfig();
 		}
 		else
 		{
 			System.out.println(e.getActionCommand());
 		}
+	}
+	
+	private void setDialogConfig()
+	{
+		dialog.setVisible(true);
+		
+		// ダイアログの編集状態を取得
+		// ここ関数化する
+		this.fontName = this.dialog.getFontName();
+		this.panel.setFontName(this.fontName);
+		
+		this.fontStyle = this.dialog.getFontStyle();
+		this.panel.setFontStyle(this.fontStyle);
+		
+		this.fontSize = this.dialog.getFontSize();
+		this.panel.setFontSize(this.fontSize);
+		
+		this.fontColor = this.dialog.getFontColor();
+		this.panel.setFontColor(this.fontColor);
+		
+		this.backgroundColor = this.dialog.getBackgroundColor();
+		this.panel.setBackgroundColor(this.backgroundColor);
 	}
 }
