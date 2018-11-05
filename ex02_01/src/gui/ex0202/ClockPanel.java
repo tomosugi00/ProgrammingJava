@@ -13,10 +13,12 @@ public class ClockPanel extends JPanel implements ActionListener
 	
 	public ClockPanel()
     {
+		this.setName("デジタル時計");
 		setBackground(Color.WHITE);
 		new Timer(TIME, this).start();
 	}
 
+	/** 定期的なアクション*/
     public void actionPerformed(ActionEvent actionEvent)
     {
     	repaint();
