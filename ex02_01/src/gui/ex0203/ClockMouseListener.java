@@ -4,17 +4,24 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JPopupMenu;
 import javax.swing.JWindow;
 
 public class ClockMouseListener extends MouseAdapter
 {
 	private final Point startPt = new Point();
 	private JWindow window;
-	  
+	private ClockWindow mainWindow;
+	 
+	public ClockMouseListener(ClockWindow window)
+	{
+		this.mainWindow = window;
+	}
+	
 	@Override
 	public void mousePressed(MouseEvent event)
 	{
-		System.out.println(event.getButton());
+		//System.out.println(event.getButton());
 		switch (event.getButton())
 		{
 			case MouseEvent.BUTTON1:
@@ -67,6 +74,9 @@ public class ClockMouseListener extends MouseAdapter
 	//右クリック
 	private void ShowConfigMenu(MouseEvent event)
 	{
-		
+		Point eventLocationOnScreen = event.getLocationOnScreen();
+		int pointX = eventLocationOnScreen.x;
+		int pointY = eventLocationOnScreen.y;
+		this.mainWindow.menu.show(this.mainWindow, pointX, pointY);
 	}
 }
