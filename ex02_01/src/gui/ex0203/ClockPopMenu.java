@@ -13,8 +13,7 @@ public class ClockPopMenu extends JPopupMenu
     private JMenuItem backgroundPanelConfigItem = new JMenuItem("背景色");
     
     public ClockPopMenu()
-    {
-    	
+    {	
     	this.add(fontConfigItem);
     	this.add(sizeConfigItem);
     	this.add(boldConfigItem);
