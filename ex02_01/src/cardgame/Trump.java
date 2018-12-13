@@ -28,6 +28,17 @@ public class Trump
 		deck.addAll(GetSuitGroup(Suit.SPADES));
 		return deck;
 	}
+	
+	public String GetSuit()
+	{
+		return this.suit.getInitial();
+	}
+	
+	public int GetNumber()
+	{
+		return this.number;
+	}
+	
 	/** スーツ1つ分のカードを取得 */
 	private static List<Trump> GetSuitGroup(Suit suit)
 	{
