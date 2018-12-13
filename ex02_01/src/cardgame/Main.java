@@ -51,7 +51,7 @@ public class Main {
             		break;
             	}
         	}
-        	scan.close();
+        	//scan.close();
         
         	/* ユーザの意思(y/n)に合わせて処理を分岐 */
        		if(input.equals("y"))
