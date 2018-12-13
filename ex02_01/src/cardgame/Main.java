@@ -75,7 +75,7 @@ public class Main {
 				break;
 			}
 			System.out.println("------------------");
-			System.out.printf("dealer : [?   ]");
+			System.out.printf("dealer : [? ??]");
 			for(int i = 1;i<dealer.size();i++)
 			{
 				System.out.printf(", [%s %02d]", dealer.get(i).GetSuit(), dealer.get(i).GetNumber());
@@ -117,12 +117,7 @@ public class Main {
 
 	private static boolean IsBurst(List<Trump> list)
 	{
-		int sum=0;
-		for(int i=0;i<list.size();i++)
-		{
-			sum += list.get(i).GetNumber();
-		}
-		return sum > 21;
+		return CardSum(list) > 21;
 	}
 
 	private static int CardSum(List<Trump> list)
@@ -130,7 +125,12 @@ public class Main {
 		int sum=0;
 		for(int i=0;i<list.size();i++)
 		{
-			sum += list.get(i).GetNumber();
+			int num =  list.get(i).GetNumber();
+			if(num<10)
+			{
+				num=10;
+			}
+			sum += num;
 		}
 		return sum;
 	}
