@@ -38,46 +38,84 @@ public class Main {
 		System.out.println("------------------");
 		
 		/* 続行する？ */
-		 while(true) {
-		System.out.println("カードを引きますか？ (y/n)");
-		Scanner scan = new Scanner(System.in);
-		String input = null;
-		while (true)
-        {
-            input = scan.next();
-            if(input.equals("y")||input.equals("n"))
-            {
-            	break;
-            }
-        }
-        scan.close();
+		 while(true)
+		 {
+			 System.out.println("カードを引きますか？ (y/n)");
+			 Scanner scan = new Scanner(System.in);
+			 String input = null;
+			while (true)
+        	{
+            	input = scan.next();
+            	if(input.equals("y")||input.equals("n"))
+            	{
+            		break;
+            	}
+        	}
+        	scan.close();
         
-        /* ユーザの意思(y/n)に合わせて処理を分岐 */
-        if(input.equals("y"))
-        {
-        	/* カードを引く */
-        	player.add(deck.Draw());
-        	if(IsBurst(player))
-        	{
+        	/* ユーザの意思(y/n)に合わせて処理を分岐 */
+       		if(input.equals("y"))
+       		{
+       			/* カードを引く */
+       			player.add(deck.Draw());
+        		if(IsBurst(player))
+        		{
+       				break;
+       			}
+       			dealer.add(deck.Draw());
+       			if(IsBurst(dealer))
+       			{
+       				win = true;
+       				break;
+       			}
+        	}
+        	else
+       		{
+       			/* スタンド */
+       			int dealerSum = CardSum(dealer);
+       			int playerSum = CardSum(player);
+       			win = dealerSum<playerSum;
         		break;
         	}
-        	dealer.add(deck.Draw());
-        	if(IsBurst(dealer))
-        	{
-        		win = true;
-        		break;
+        	System.out.println("------------------");
+        	System.out.printf("dealer : [ ? ]");
+       		for(int i = 1;i<dealer.size();i++)
+       		{
+       			System.out.printf(", [%s %d]", dealer.get(i).GetSuit(), dealer.get(i).GetNumber());
+       		}
+       		System.out.printf("\n");
+       		System.out.printf("player : [%s %d]",player.get(0).GetSuit(), player.get(0).GetNumber());
+       		for(int i = 1;i<dealer.size();i++)
+       		{
+        			System.out.printf(", [%s %d]", player.get(i).GetSuit(), player.get(i).GetNumber());
         	}
-        }
-        else
-        {
-        	/* スタンド */
-        	int dealerSum = CardSum(dealer);
-        	int playerSum = CardSum(player);
-        	
-        }
-		
+        	System.out.printf("\n");
+       		System.out.println("------------------");
 		 }
 		
+		 System.out.println("------------------");
+		 System.out.printf("dealer : [%s %d]",dealer.get(0).GetSuit(), dealer.get(0).GetNumber());
+    		for(int i = 1;i<dealer.size();i++)
+    		{
+    			System.out.printf(", [%s %d]", dealer.get(i).GetSuit(), dealer.get(i).GetNumber());
+    		}
+    		System.out.printf("\n");
+    		System.out.printf("player : [%s %d]",player.get(0).GetSuit(), player.get(0).GetNumber());
+    		for(int i = 1;i<player.size();i++)
+    		{
+     			System.out.printf(", [%s %d]", player.get(i).GetSuit(), player.get(i).GetNumber());
+     	}
+     	System.out.printf("\n");
+    		System.out.println("------------------");
+		 
+		 if(win)
+		 {
+			 System.out.println("player win");
+		 }
+		 else
+		 {
+			 System.out.println("dealer win");
+		 }
 	}
 	
 	private static boolean IsBurst(List<Trump> list)
