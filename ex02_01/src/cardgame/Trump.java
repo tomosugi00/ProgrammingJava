@@ -11,13 +11,13 @@ public class Trump
 	private int number;
 	/** 絵札か */
 	private boolean face;
-	
+
 	public Trump(Suit suit,int number)
 	{
 		this.suit = suit;
 		this.number = number;
 	}
-	
+
 	/** トランプ用のデッキを取得 */
 	public static List<Trump> GetDeck()
 	{
@@ -28,17 +28,17 @@ public class Trump
 		deck.addAll(GetSuitGroup(Suit.SPADES));
 		return deck;
 	}
-	
+
 	public String GetSuit()
 	{
 		return this.suit.getInitial();
 	}
-	
+
 	public int GetNumber()
 	{
 		return this.number;
 	}
-	
+
 	/** スーツ1つ分のカードを取得 */
 	private static List<Trump> GetSuitGroup(Suit suit)
 	{
@@ -49,7 +49,7 @@ public class Trump
 		}
 		return deck;
 	}
-	
+
 	private boolean IsFaceCard()
 	{
 		return this.number>=11;

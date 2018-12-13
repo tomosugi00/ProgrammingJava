@@ -6,7 +6,7 @@ public enum Suit
 	DIAMONDS("DIAMONDS","D"),
 	CLUBS("CLUBS","C"),
 	SPADES("SPADES","S");
-	
+
 	private String name;
 	private String initial;
 	private Suit(String name, String initial)

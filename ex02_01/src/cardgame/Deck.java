@@ -12,20 +12,20 @@ public class Deck<E>
 	private int index;
 	/* デッキのカード枚数 */
 	private int maxNumber;
-	
+
 	public Deck(List<E> cardList)
 	{
 		this.deck = new ArrayList<E>(cardList);
 		index = 0;
 		maxNumber = deck.size();
 	}
-	
+
 	/** シャッフル */
 	public void Shuffle()
 	{
 		Collections.shuffle(deck);
 	}
-	
+
 	/** 一番上のカードを取得 */
 	public E Draw()
 	{
@@ -37,17 +37,17 @@ public class Deck<E>
 		index++;
 		return card;
 	}
-	
+
 	public void Reset()
 	{
 		index=0;
 		this.Shuffle();
 	}
-	
+
 	/** デッキのカードが切れたか判定 */
 	private boolean IsEmpty()
 	{
 		return index>=this.maxNumber;
 	}
-	
+
 }
