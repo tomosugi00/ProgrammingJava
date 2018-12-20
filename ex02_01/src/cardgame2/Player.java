@@ -30,12 +30,16 @@ public class Player
 
 	public void split()
 	{
+
+		
 		//自分の全ての手札で判定を行う。処理中に手札が増えることもある
 		for(int i=0;i<myHands.size();i++)
 		{
+			
 			// スプリットの条件を満たさなくなるまでスプリットする
 			while(myHands.get(i).isSplit())
 			{
+				System.out.println("split!");
 				// myHandsの最後の要素として追加
 				myHands.add(new BlackJackHand());
 				// 出来たばかりの最後の要素に周回対象の手札の最後の1枚を渡す
