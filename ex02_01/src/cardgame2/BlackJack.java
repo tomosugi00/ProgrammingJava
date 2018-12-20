@@ -24,51 +24,51 @@ public class BlackJack
 		// player 2枚引く
 		player.draw(0);
 		player.draw(0);
-		
+
 		//確認用。後で消す
-		showGameTable();
-		
+		//showGameTable();
+
 		//プレイヤー側：スプリット
 		player.split();
-		
-		//確認用。後で消す
-		showGameTable();
-		
+
+		//現在のテーブルを表示
+		showGameTable();	
 	}
 
 	/** プレイヤーサイドの処理 */
 	public void playerTurn()
 	{
-		/*
 		// スプリットした数だけ
-		for(int i=0;i<player.hands.size();i++)
+		for(int i=0;i<player.getNumberOfHands();i++)
 		{
 			//既にブラックジャックならスルー
-			if(player.hand[i].isBJ)
+			if(player.getHand(i).isBlackJack())
 			{
 				continue;
 			}
 
-			// ゲームの状況を表示
-			showGameTable();
+			while(true)
+			{
+				// ゲームの状況を表示
+				showGameTable();
 
-			// 引くのをやめる?
-			if(isFinished())
-			{
-				continue;
-			}
-			// カードを引く
-			player.hands[i].draw();
-			// バースト？
-			if(player.hands[i].isBurst)
-			{
-				continue;
+				// 引くのをやめる?
+				if(isFinished())
+				{
+					break;
+				}
+				// カードを引く
+				player.draw(i);
+				// バースト？
+				if(player.getHand(i).isBurst(false))
+				{
+					break;
+				}
 			}
 		}
-		*/
 	}
 
-	/** */
+	/** カードを引くか */
 	private boolean isFinished()
 	{
 		System.out.println("カードを引きますか？ (y/n)");
@@ -82,7 +82,6 @@ public class BlackJack
 				break;
 			}
 		}
-		scan.close(); //いらないかも
 		return input.equals("n");
 	}
 
@@ -95,24 +94,19 @@ public class BlackJack
 		System.out.println("------------");
 	}
 
-
-
 	/** ディーラーサイドの処理 */
 	public void dealerTurn()
 	{
-		/*
-		while(dealer.getSumForDealer()<17)
+		while(dealer.getHand(0).getSum(true)<17)
 		{
 			// 1枚引く
-			dealer.draw();
-
+			dealer.draw(0);
 			// バーストした？
-			if(dealer.isBurstForDealer())
+			if(dealer.getHand(0).isBurst(true))
 			{
 				break;
 			}
 		}
-		*/
 	}
 
 	/** 勝敗判定 */

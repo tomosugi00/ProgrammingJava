@@ -17,6 +17,16 @@ public class Player
 	{
 		this.myHands.get(index).draw();
 	}
+	
+	public BlackJackHand getHand(int index)
+	{
+		return this.myHands.get(index);
+	}
+	
+	public int getNumberOfHands()
+	{
+		return this.myHands.size();
+	}
 
 	public void split()
 	{
