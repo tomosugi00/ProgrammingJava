@@ -6,26 +6,39 @@ import java.util.List;
 
 public class Deck
 {
+	private static Deck deck = new Deck();
 	/* 山札 */
-	private static List<Card> deck;
+	private List<Card> cardList;
 	/* 一番上のカードの位置 */
-	private static int index;
+	private int index;
 
 	private Deck()
 	{
-		deck = new ArrayList<Card>();
+		this.cardList = createDeck();
+		this.Shuffle();
+		this.index = 0;
+	}
+	
+	public static Deck getDeck()
+	{
+		return deck;
+	}
+	
+	private List<Card> createDeck()
+	{
+		List<Card> deck = new ArrayList<Card>();
 		deck.addAll(getSuitCardGroup(Suit.HEARTS));
 		deck.addAll(getSuitCardGroup(Suit.DIAMONDS));
 		deck.addAll(getSuitCardGroup(Suit.CLUBS));
 		deck.addAll(getSuitCardGroup(Suit.SPADES));
 		deck.addAll(getSuitCardGroup(Suit.JOKER));
-		index = 0;
+		return deck;
 	}
-
+	
 	/** シャッフル */
 	public void Shuffle()
 	{
-		Collections.shuffle(deck);
+		Collections.shuffle(cardList);
 	}
 
 	/** 一番上のカードを取得 */
@@ -35,7 +48,7 @@ public class Deck
 		{
 			return null;
 		}
-		Card card = deck.get(index);
+		Card card = cardList.get(index);
 		index++;
 		return card;
 	}
@@ -51,7 +64,7 @@ public class Deck
 	/** カードの残り枚数 */
 	public int getRestOfTheNumber()
 	{
-		return deck.size() - index;
+		return cardList.size() - index;
 	}
 
 	/** デッキのカードが切れたか判定 */
@@ -60,7 +73,7 @@ public class Deck
 		return getRestOfTheNumber()==0;
 	}
 
-	private List<Card> getSuitCardGroup(Suit suit)
+	private static List<Card> getSuitCardGroup(Suit suit)
 	{
 		List<Card> cardGroup = new ArrayList<Card>();
 		if(suit==Suit.JOKER)
@@ -81,7 +94,7 @@ public class Deck
 		return cardGroup;
 	}
 
-	private List<Card> getJokers(int number)
+	private static List<Card> getJokers(int number)
 	{
 		List<Card> cardGroup = new ArrayList<Card>();
 		for(int i=0;i<number;i++)
