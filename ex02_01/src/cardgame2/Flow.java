@@ -9,7 +9,7 @@ public class Flow
 	{
 		bj.start();
 		bj.playerTurn();
-		//bj.dealerTurn();
-		//bj.jadge();
+		bj.dealerTurn();
+		bj.jadge();
 	}
 }

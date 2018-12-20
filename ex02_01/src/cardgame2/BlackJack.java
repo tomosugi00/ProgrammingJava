@@ -32,12 +32,14 @@ public class BlackJack
 		player.split();
 
 		//現在のテーブルを表示
-		showGameTable();	
+		showGameTable(true);	
 	}
 
 	/** プレイヤーサイドの処理 */
 	public void playerTurn()
 	{
+		System.out.println("===<プレイヤーターン>===\n");
+		
 		// スプリットした数だけ
 		for(int i=0;i<player.getNumberOfHands();i++)
 		{
@@ -50,7 +52,7 @@ public class BlackJack
 			while(true)
 			{
 				// ゲームの状況を表示
-				showGameTable();
+				showGameTable(true);
 
 				// 引くのをやめる?
 				if(isFinished())
@@ -86,10 +88,10 @@ public class BlackJack
 	}
 
 	/** */
-	private void showGameTable()
+	private void showGameTable(boolean game)
 	{
 		System.out.println("------------");
-		dealer.showHand(true,0);
+		dealer.showHand(game,0);
 		player.showHands(false);
 		System.out.println("------------");
 	}
@@ -97,6 +99,7 @@ public class BlackJack
 	/** ディーラーサイドの処理 */
 	public void dealerTurn()
 	{
+		System.out.println("===<ディーラーターン>===\n");
 		while(dealer.getHand(0).getSum(true)<17)
 		{
 			// 1枚引く
@@ -112,6 +115,9 @@ public class BlackJack
 	/** 勝敗判定 */
 	public void jadge()
 	{
-
+		System.out.println("===<勝敗>===\n");
+		showGameTable(false);
+		
+		
 	}
 }
