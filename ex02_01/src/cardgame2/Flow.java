@@ -8,8 +8,8 @@ public class Flow
 	public static void main(String[] args)
 	{
 		bj.start();
-		//bj.playerTurn();
-		//bj.dealerTurn();
-		//bj.jadge();
+		bj.playerTurn();
+		bj.dealerTurn();
+		bj.jadge();
 	}
 }

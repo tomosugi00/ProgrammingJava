@@ -24,51 +24,53 @@ public class BlackJack
 		// player 2枚引く
 		player.draw(0);
 		player.draw(0);
-		
+
 		//確認用。後で消す
-		showGameTable();
-		
+		//showGameTable();
+
 		//プレイヤー側：スプリット
 		player.split();
-		
-		//確認用。後で消す
-		showGameTable();
-		
+
+		//現在のテーブルを表示
+		showGameTable(true);	
 	}
 
 	/** プレイヤーサイドの処理 */
 	public void playerTurn()
 	{
-		/*
+		System.out.println("===<プレイヤーターン>===\n");
+		
 		// スプリットした数だけ
-		for(int i=0;i<player.hands.size();i++)
+		for(int i=0;i<player.getNumberOfHands();i++)
 		{
 			//既にブラックジャックならスルー
-			if(player.hand[i].isBJ)
+			if(player.getHand(i).isBlackJack())
 			{
 				continue;
 			}
 
-			// ゲームの状況を表示
-			showGameTable();
+			while(true)
+			{
+				// ゲームの状況を表示
+				showGameTable(true);
 
-			// 引くのをやめる?
-			if(isFinished())
-			{
-				continue;
-			}
-			// カードを引く
-			player.hands[i].draw();
-			// バースト？
-			if(player.hands[i].isBurst)
-			{
-				continue;
+				// 引くのをやめる?
+				if(isFinished())
+				{
+					break;
+				}
+				// カードを引く
+				player.draw(i);
+				// バースト？
+				if(player.getHand(i).isBurst(false))
+				{
+					break;
+				}
 			}
 		}
-		*/
 	}
 
-	/** */
+	/** カードを引くか */
 	private boolean isFinished()
 	{
 		System.out.println("カードを引きますか？ (y/n)");
@@ -82,42 +84,40 @@ public class BlackJack
 				break;
 			}
 		}
-		scan.close(); //いらないかも
 		return input.equals("n");
 	}
 
 	/** */
-	private void showGameTable()
+	private void showGameTable(boolean game)
 	{
 		System.out.println("------------");
-		dealer.showHand(true,0);
+		dealer.showHand(game,0);
 		player.showHands(false);
 		System.out.println("------------");
 	}
 
-
-
 	/** ディーラーサイドの処理 */
 	public void dealerTurn()
 	{
-		/*
-		while(dealer.getSumForDealer()<17)
+		System.out.println("===<ディーラーターン>===\n");
+		while(dealer.getHand(0).getSum(true)<17)
 		{
 			// 1枚引く
-			dealer.draw();
-
+			dealer.draw(0);
 			// バーストした？
-			if(dealer.isBurstForDealer())
+			if(dealer.getHand(0).isBurst(true))
 			{
 				break;
 			}
 		}
-		*/
 	}
 
 	/** 勝敗判定 */
 	public void jadge()
 	{
-
+		System.out.println("===<勝敗>===\n");
+		showGameTable(false);
+		
+		
 	}
 }

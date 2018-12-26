@@ -1,8 +1,5 @@
 package cardgame2;
 
-import java.util.List;
-
-import cardgame2.card.Card;
 import cardgame2.card.Hand;
 
 public class BlackJackHand extends Hand
@@ -33,7 +30,19 @@ public class BlackJackHand extends Hand
 		{
 			return false;
 		}
-		return this.myHand.get(0)==this.myHand.get(1);
+		
+		int card0 = this.myHand.get(0).getNumber();
+		if(card0>10)
+		{
+			card0=10;
+		}
+		int card1 = this.myHand.get(1).getNumber();
+		if(card1>10)
+		{
+			card0=10;
+		}
+		
+		return card0==card1;
 	}
 	
 	//CUI用になっているのでGUIにも対応するようなものに変える
