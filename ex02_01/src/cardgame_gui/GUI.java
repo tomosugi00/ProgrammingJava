@@ -1,6 +1,6 @@
 package cardgame_gui;
 
-public class Main
+public class GUI
 {
 	public static void main(String[] args)
 	{
