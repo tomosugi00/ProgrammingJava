@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
@@ -12,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import blackjack.model.BlackJack;
-import cardgame_gui.GameFrame;
 
 public class MainView extends Frame implements ActionListener
 {
@@ -25,6 +25,8 @@ public class MainView extends Frame implements ActionListener
 	private Button DrawButton;
 	private Button FinishButton;
 	private Button SplitButton;
+	/* ラベル */
+	private Label StatusLabel;
 	
 	/* モデル層 */
 	private BlackJack bj;
@@ -66,7 +68,7 @@ public class MainView extends Frame implements ActionListener
 	{
 		if (e.getSource() == itemStart)
 		{
-			//ゲームスタート
+			bj.start();
 		}
 		else if(e.getSource() == itemExit)
 		{
@@ -75,11 +77,18 @@ public class MainView extends Frame implements ActionListener
 		}
 	}
 	
+	/** イベントを追加 */
 	private void setEvent()
 	{
 		this.bj = new BlackJack();
+		bj.addOnChanged(e -> 
+		{
+			this.StatusLabel.setText(bj.getStatus());
+			repaint();
+		});
 	}
 	
+	/** 画面生成 */
 	private void createFrame()
 	{
 		this.setName("BlackJack");
@@ -103,6 +112,12 @@ public class MainView extends Frame implements ActionListener
 		this.itemExit = new MenuItem("Exit");
 		itemExit.addActionListener(this);
 		menuFile.add(itemExit);
+		
+		// ラベル
+		StatusLabel = new Label("aaa");
+		StatusLabel.setBounds(500, 50, 50, 20);
+		this.add(StatusLabel);
+		StatusLabel.setVisible(true);
 
 		// ボタン
 		DrawButton = new Button("Draw");
