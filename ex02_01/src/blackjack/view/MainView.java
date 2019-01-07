@@ -22,11 +22,13 @@ public class MainView extends Frame implements ActionListener
 	private MenuItem itemStart;
 	private MenuItem itemExit;
 	/* ボタン */
-	private Button DrawButton;
-	private Button FinishButton;
-	private Button SplitButton;
+	private Button drawButton;
+	private Button finishButton;
+	private Button splitButton;
 	/* ラベル */
-	private Label StatusLabel;
+	private Label statusLabel;
+	/**/
+	private Label gameTable;
 	
 	/* モデル層 */
 	private BlackJack bj;
@@ -83,7 +85,8 @@ public class MainView extends Frame implements ActionListener
 		this.bj = new BlackJack();
 		bj.addOnChanged(e -> 
 		{
-			this.StatusLabel.setText(bj.getStatus());
+			this.statusLabel.setText(bj.getStatus());
+			this.gameTable.setText(bj.getTable());
 			repaint();
 		});
 	}
@@ -114,37 +117,42 @@ public class MainView extends Frame implements ActionListener
 		menuFile.add(itemExit);
 		
 		// ラベル
-		StatusLabel = new Label("aaa");
-		StatusLabel.setBounds(500, 50, 50, 20);
-		this.add(StatusLabel);
-		StatusLabel.setVisible(true);
+		statusLabel = new Label("aaa");
+		statusLabel.setBounds(20, 50, 100, 20);
+		this.add(statusLabel);
+		statusLabel.setVisible(true);
 
+		gameTable = new Label("aaa");
+		gameTable.setBounds(20, 0, 400, 200);
+		this.add(gameTable);
+		gameTable.setVisible(true);
+		
 		// ボタン
-		DrawButton = new Button("Draw");
-		DrawButton.setBounds(100,300,50, 20);
-		DrawButton.addActionListener(e ->
+		drawButton = new Button("Draw");
+		drawButton.setBounds(100,300,50, 20);
+		drawButton.addActionListener(e ->
 		{
 			bj.draw();
 		});
-		this.add(DrawButton);
-		DrawButton.setVisible(true);
+		this.add(drawButton);
+		drawButton.setVisible(true);
 
-		FinishButton = new Button("Finish");
-		FinishButton.setBounds(200,300,50, 20);
-		FinishButton.addActionListener(e ->
+		finishButton = new Button("Finish");
+		finishButton.setBounds(200,300,50, 20);
+		finishButton.addActionListener(e ->
 		{
 			bj.finish();
 		});
-		this.add(FinishButton);
-		FinishButton.setVisible(true);
+		this.add(finishButton);
+		finishButton.setVisible(true);
 
-		SplitButton = new Button("Split");
-		SplitButton.setBounds(300,300,50, 20);
-		SplitButton.addActionListener(e ->
+		splitButton = new Button("Split");
+		splitButton.setBounds(300,300,50, 20);
+		splitButton.addActionListener(e ->
 		{
 			bj.split();
 		});
-		this.add(SplitButton);
-		SplitButton.setVisible(true);
+		this.add(splitButton);
+		splitButton.setVisible(true);
 	}
 }
