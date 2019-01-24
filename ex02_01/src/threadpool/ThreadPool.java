@@ -52,7 +52,7 @@ public class ThreadPool
     		// スレッドプール起動
     		this.isActive = true;
     	
-    		// スレッド生成
+    		// スレッド生成&起動
     		ArrayList<DispatchThread> threads = new ArrayList<DispatchThread>(this.numberOfThreads);
     		for(int i=0;i<this.numberOfThreads;i++)
     		{
@@ -77,17 +77,12 @@ public class ThreadPool
     			throw new IllegalStateException();
     		}
     		
-    		// スレッドプールの全てのタスクを終了させる
+    		// スレッドプール停止
+    		this.isActive = false;
     		
     		// 1. queueの中のタスクを全部消費する
     		// 2. スレッドを全部終了する
-    		// 3. 全部終わったことを確認してreturnすること
-    		
-    		// thread内でbreakをどう仕込むか
-    		// threadのisActiveがfalseになっているか調べられてしまう
-    		
-    		// スレッドプール停止
-    		this.isActive = false;
+    		// 3. 全部終わったことを確認してreturnする
     	}
     }
     
@@ -109,8 +104,10 @@ public class ThreadPool
     		throw new NullPointerException();
     	}
     	
-    	synchronized(this)
-    	{
+    	while(true)
+		{
+    		synchronized(this)
+    		{
     			if(!this.isActive)
     			{
     				throw new NullPointerException();
@@ -121,7 +118,6 @@ public class ThreadPool
 				{
 					try
 					{
-						// キューに空きができるまで待機
 						wait();
 					}
 					catch (InterruptedException e)
@@ -129,15 +125,19 @@ public class ThreadPool
 						e.printStackTrace();
 					}
 				}
-				// キューに追加
-				this.queue.add(runnable);
-				
-    	}
+				else
+				{
+					// キューに追加
+					this.queue.add(runnable);
+					notifyAll();
+				}
+    		}
+		}
     }
     
     
     /**
-     * 
+     * 共通のキューからタスクをとることを考慮したThreadクラス
      */
     private class DispatchThread extends Thread
     {
@@ -164,8 +164,6 @@ public class ThreadPool
     				{
     					Runnable runnable = this.queue.remove(0);
     					notifyAll(); 
-    					// 通知(条件をwhileにしましょう)
-    					// そうじゃなかったらwhileに入るようにすること
     					
     					// タスクを実行
     	    			if(runnable!=null)
@@ -176,13 +174,13 @@ public class ThreadPool
     				}
     				else
     				{
-    					//やることなかったらここでwait(これで無限ループしなくなる)
     					try
     					{
-    						if(!this.isActive())
-    						{
-    							break;
-    						}
+    						//stop()が起動した場合
+    						//if(!this.isActive())
+    						//{
+    						//	break;
+    						//}
 							wait();
 						}
     					catch (InterruptedException e)
