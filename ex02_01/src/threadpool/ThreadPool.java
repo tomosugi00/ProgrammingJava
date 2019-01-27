@@ -7,6 +7,7 @@ public class ThreadPool
 {
 	private final ArrayList<Runnable> queue;
 	private final int queueSize;
+	private final ArrayList<DispatchThread> threads;
 	private final int numberOfThreads;
 	private boolean isActive;
 
@@ -31,6 +32,7 @@ public class ThreadPool
 		this.numberOfThreads = numberOfThreads;
 		this.isActive = false;
 		this.queue = new ArrayList<Runnable>(this.queueSize);
+		this.threads = new ArrayList<DispatchThread>(this.numberOfThreads);
 	}
 
 	/**
@@ -50,7 +52,8 @@ public class ThreadPool
 
 			this.isActive = true;
 
-			ArrayList<DispatchThread> threads = new ArrayList<DispatchThread>(this.numberOfThreads);
+			//ArrayList<DispatchThread> threads = new ArrayList<DispatchThread>(this.numberOfThreads);
+			threads.clear();
 			for (int i = 0; i < this.numberOfThreads; i++)
 			{
 				threads.add(new DispatchThread(this.queue,() -> {
@@ -82,6 +85,22 @@ public class ThreadPool
 			// 2. スレッドを全部終了する
 			// 3. 全部終わったことを確認してreturnすること
 
+			while(true)
+			{
+				int sum = 0;
+				for(int i=0;i<threads.size();i++)
+				{
+					if(threads.get(i).isAlive())
+					{
+						sum++;
+					}
+				}
+				if(sum<1)
+				{
+					break;
+				}
+			}
+			
 			while (true)
 			{
 				synchronized (this.queue)
@@ -138,7 +157,6 @@ public class ThreadPool
 				{
 					if (this.queue.size() < this.queueSize)
 					{
-
 						this.queue.add(runnable);
 						this.queue.notifyAll();
 						break;
