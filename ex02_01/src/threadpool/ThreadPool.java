@@ -85,21 +85,7 @@ public class ThreadPool
 			// 2. スレッドを全部終了する
 			// 3. 全部終わったことを確認してreturnすること
 
-			while(true)
-			{
-				int sum = 0;
-				for(int i=0;i<threads.size();i++)
-				{
-					if(threads.get(i).isAlive())
-					{
-						sum++;
-					}
-				}
-				if(sum<1)
-				{
-					break;
-				}
-			}
+
 			
 			while (true)
 			{
@@ -123,6 +109,27 @@ public class ThreadPool
 						break;
 					}
 				}
+			}
+			
+			
+			
+			while(true)
+			{
+				int sum = 0;
+				for(int i=0;i<threads.size();i++)
+				{
+					if(threads.get(i).isAlive())
+					{
+						sum++;
+					}
+				}
+				if(sum<1)
+				{
+					break;
+				}
+				
+				
+				
 			}
 		}
 	}
@@ -199,17 +206,13 @@ public class ThreadPool
 		{
 			while (true)
 			{
+				Runnable runnable = null;
 				synchronized (this.queue)
 				{
 					if (this.queue.size() > 0)
 					{
-						Runnable runnable = this.queue.remove(0);
+						runnable = this.queue.remove(0);
 						this.queue.notifyAll();
-
-						if (runnable != null)
-						{
-							runnable.run();
-						}
 					}
 					else
 					{
@@ -226,6 +229,10 @@ public class ThreadPool
 							e.printStackTrace();
 						}
 					}
+				}
+				if (runnable != null)
+				{
+					runnable.run();
 				}
 			}
 		}
