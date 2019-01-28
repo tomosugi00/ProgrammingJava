@@ -112,7 +112,6 @@ public class ThreadPool
 			}
 			
 			
-			
 			while(true)
 			{
 				int sum = 0;
@@ -127,9 +126,6 @@ public class ThreadPool
 				{
 					break;
 				}
-				
-				
-				
 			}
 		}
 	}
@@ -189,12 +185,9 @@ public class ThreadPool
 	 */
 	private class DispatchThread extends Thread
 	{
-		// 1. queueSizeを超えたらwait、終わったらnotifyAllを使う
-		// 2. 通知したら見に行く、キューサイズを超えたタスクが来たら待つ
-		// 3. 取り出したと通知、queueを見に行く、空いてたらつめる
 
-		private ArrayList<Runnable> queue;
-		private Supplier<Boolean> poolActive;
+		private final ArrayList<Runnable> queue;
+		private final Supplier<Boolean> poolActive;
 
 		public DispatchThread(ArrayList<Runnable> queue, Supplier<Boolean> liper)
 		{
