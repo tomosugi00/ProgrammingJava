@@ -1,5 +1,6 @@
 package threadpool;
 
+import java.awt.desktop.ScreenSleepEvent;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
@@ -79,14 +80,6 @@ public class ThreadPool
 				throw new IllegalStateException();
 			}
 
-			// スレッドプールの全てのタスクを終了させる
-
-			// 1. queueの中のタスクを全部消費する
-			// 2. スレッドを全部終了する
-			// 3. 全部終わったことを確認してreturnすること
-
-
-			
 			while (true)
 			{
 				synchronized (this.queue)
@@ -110,8 +103,8 @@ public class ThreadPool
 					}
 				}
 			}
-			
-			
+
+
 			while(true)
 			{
 				int sum = 0;
@@ -121,6 +114,7 @@ public class ThreadPool
 					{
 						sum++;
 					}
+					
 				}
 				if(sum<1)
 				{
@@ -140,45 +134,43 @@ public class ThreadPool
 	 * @throws IllegalStateException if this pool has not been started yet.
 	 *                               (スレッドプールがまだ起動していなかった場合)
 	 */
-	public synchronized void dispatch(Runnable runnable)
+	public void dispatch(Runnable runnable)
 	{
 		if (runnable == null)
 		{
 			throw new NullPointerException();
 		}
 
-		synchronized (this)
+		if (!this.isActive)
 		{
-			if (!this.isActive)
-			{
-				throw new IllegalStateException();
-			}
+			throw new IllegalStateException();
+		}
 
-			while (true)
+		while (true)
+		{
+			synchronized (this.queue)
 			{
-				synchronized (this.queue)
+				if (this.queue.size() < this.queueSize)
 				{
-					if (this.queue.size() < this.queueSize)
+					this.queue.add(runnable);
+					this.queue.notifyAll();
+					break;
+				}
+				else
+				{
+					try
 					{
-						this.queue.add(runnable);
-						this.queue.notifyAll();
-						break;
+						this.queue.wait();
 					}
-					else
+					catch (InterruptedException e)
 					{
-						try
-						{
-							this.queue.wait();
-						}
-						catch (InterruptedException e)
-						{
-							e.printStackTrace();
-						}
+						e.printStackTrace();
 					}
 				}
 			}
 		}
 	}
+
 
 	/**
 	 * 
