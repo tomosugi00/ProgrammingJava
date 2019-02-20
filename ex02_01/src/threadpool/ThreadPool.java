@@ -1,6 +1,5 @@
 package threadpool;
 
-import java.awt.desktop.ScreenSleepEvent;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
