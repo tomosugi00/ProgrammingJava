@@ -109,6 +109,7 @@ public class BMP
 			{
 				int index = j * 3 + i * (width*3);
 				
+				
 				pixel[index] = 255 - pixel[index];		//R
 				pixel[index+1] = 255- pixel[index+1];	//G
 				pixel[index+2] = 255 - pixel[index+2];	//B
