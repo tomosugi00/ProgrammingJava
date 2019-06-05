@@ -3,6 +3,8 @@ package interpret.model;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -16,6 +18,8 @@ public class MainModel
 	private EventHandler arrayEventHandler = new EventHandler();
 	private EventHandler arrayInfoEventHandler = new EventHandler();
 	private EventHandler arrayChangeEventHandler = new EventHandler();
+	private EventHandler instanceInfoEventHandler = new EventHandler();
+	private EventHandler arrayItemInfoEventHandler = new EventHandler();
 
 	/* インスタンス保有 */
 	private ArrayList<String> instanceList;		// View用
@@ -26,6 +30,12 @@ public class MainModel
 	private Object arrayTargetInfo;	//Model用。実際の対象配列。
 	private ArrayList<String>arrayInfoList;		// View用。対象配列の要素のリスト。対象配列分だけあればよい。また何度も内容を変えるに注意
 
+	/* 実行対象インスタンス保有 */
+	private ArrayList<Field> targetInstanceFieldArray;	//Model用。フィールド
+	private ArrayList<Method> targetInstanceMethodArray;	//Model用。メソッド
+	private ArrayList<String> targetInstanceFieldList;		//View用
+	private ArrayList<String> targetInstanceMethodList;	//View用
+	private String targetInstanceItem;	// View用。インスタンス&配列兼用
 
 	/*状態*/
 	private ArrayList<String>  constractorList;	// View用 ※Listにするとエラー(コンパイラverのせい？)
@@ -37,6 +47,8 @@ public class MainModel
 	private String instanceErrorCode;
 	private String arrayInfoErrorCode;
 	private String arrayChangeErrorCode;
+	private String instanceInfoErrorCode;
+	private String arrayItemInfoErrorCode;
 
 	public MainModel()
 	{
@@ -57,6 +69,8 @@ public class MainModel
 		instanceErrorCode = "";
 		arrayInfoErrorCode = "";
 		arrayChangeErrorCode = "";
+		instanceInfoErrorCode="";
+		arrayItemInfoErrorCode = "";
 	}
 
 	/**
@@ -362,6 +376,117 @@ public class MainModel
 		}
 	}
 
+	/**
+	 * 右側：選択中のインスタンスのフィールドとメソッドを取得
+	 * @param index
+	 * @param value
+	 */
+	public void getInstanceInfoFrom(int index)
+	{
+
+		//初期化
+		this.targetInstanceItem = "";
+		this.targetInstanceFieldArray = new ArrayList<Field>();
+		this.targetInstanceMethodArray = new ArrayList<Method>();
+		this.targetInstanceFieldList = new ArrayList<String>();
+		this.targetInstanceMethodList = new ArrayList<String>();
+
+		if(index<0)
+		{
+			this.instanceInfoErrorCode = "要素が選択されていません";
+			instanceInfoEventHandler.broadcast(null);
+			return;
+		}
+
+		//対象インスタンス取得
+		Object obj = this.instanceArray.get(index);
+		Class<?> cls = obj.getClass();
+
+		//対象インスタンス表示
+		this.targetInstanceItem = instanceList.get(index);
+
+		//フィールド取得
+		this.targetInstanceFieldArray = new ArrayList<Field>(Arrays.asList(cls.getDeclaredFields()));	
+		for (Field field: targetInstanceFieldArray)
+		{
+			this.targetInstanceFieldList.add(field.toGenericString());
+		}
+
+		//メソッド取得
+		this.targetInstanceMethodArray = new ArrayList<Method>(Arrays.asList(cls.getDeclaredMethods()));	
+		for (Method method: targetInstanceMethodArray)
+		{
+			this.targetInstanceMethodList.add(method.toGenericString());
+		}
+
+		this.instanceInfoErrorCode = "OK";
+		instanceInfoEventHandler.broadcast(null);
+
+	}
+
+
+	public void getArrayItemInfoFrom(int index)
+	{
+		//初期化
+		this.targetInstanceItem = "";
+		this.targetInstanceFieldArray = new ArrayList<Field>();
+		this.targetInstanceMethodArray = new ArrayList<Method>();
+		this.targetInstanceFieldList = new ArrayList<String>();
+		this.targetInstanceMethodList = new ArrayList<String>();
+
+		if(index<0)
+		{
+			this.arrayItemInfoErrorCode = "配列要素が選択されていません";
+			arrayItemInfoEventHandler.broadcast(null);
+			return;
+		}
+
+		// 対象インスタンスは配列か？
+		if(this.arrayTargetInfo==null)
+		{
+			this.arrayItemInfoErrorCode = "配列が選択されていません";
+			arrayItemInfoEventHandler.broadcast(null);
+			return;
+		}
+		if(!this.arrayTargetInfo.getClass().isArray())
+		{
+			this.arrayItemInfoErrorCode = "対象インスタンスが配列ではありません";
+			arrayItemInfoEventHandler.broadcast(null);
+			return;
+		}
+		// 配列の要素を取得
+		Object target = Array.get(this.arrayTargetInfo, index);
+		if(target==null)
+		{
+			this.arrayItemInfoErrorCode = "要素がnullです";
+			arrayItemInfoEventHandler.broadcast(null);
+			return;
+		}
+
+		Class<?> targetCls = target.getClass();
+
+		//対象インスタンス表示
+		this.targetInstanceItem = arrayInfoList.get(index);
+
+		//フィールド取得
+		this.targetInstanceFieldArray = new ArrayList<Field>(Arrays.asList(targetCls.getDeclaredFields()));	
+		for (Field field: targetInstanceFieldArray)
+		{
+			this.targetInstanceFieldList.add(field.toGenericString());
+		}
+
+		//メソッド取得
+		this.targetInstanceMethodArray = new ArrayList<Method>(Arrays.asList(targetCls.getDeclaredMethods()));	
+		for (Method method: targetInstanceMethodArray)
+		{
+			this.targetInstanceMethodList.add(method.toGenericString());
+		}
+
+		this.arrayItemInfoErrorCode = "OK";
+		arrayItemInfoEventHandler.broadcast(null);
+
+	}
+
 
 	/* イベントセット */
 	public void setInputClassEvent(Consumer<EventArgs> listener)
@@ -384,6 +509,14 @@ public class MainModel
 	{
 		this.arrayChangeEventHandler.add(listener);
 	}
+	public void setInstanceInfoEvent(Consumer<EventArgs> listener)
+	{
+		this.instanceInfoEventHandler.add(listener);
+	}
+	public void setArrayItemInfoEvent(Consumer<EventArgs> listener)
+	{
+		this.arrayItemInfoEventHandler.add(listener);
+	}
 
 	/* プロパティ */
 	public ArrayList<String> getConstractorList()
@@ -404,7 +537,19 @@ public class MainModel
 	{
 		return this.arrayInfoList;
 	}
-
+	public String getTargetInstanceItem()
+	{
+		return this.targetInstanceItem;
+	}
+	public ArrayList<String> getTargetInstanceFieldList()
+	{
+		return this.targetInstanceFieldList;
+	}
+	public ArrayList<String> getTargetInstanceMethodList()
+	{
+		return this.targetInstanceMethodList;
+	}
+	// エラーコード取得
 	public String getConstractorError()
 	{
 		return this.constractorErrorCode;
@@ -428,5 +573,13 @@ public class MainModel
 	public String getArrayChangeError()
 	{
 		return this.arrayChangeErrorCode;
+	}
+	public String getInstanceInfoError()
+	{
+		return this.instanceInfoErrorCode;
+	}
+	public String getArrayItemInfoError()
+	{
+		return this.arrayItemInfoErrorCode;
 	}
 }

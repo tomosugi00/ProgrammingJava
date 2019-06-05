@@ -193,7 +193,7 @@ public class MainFrame extends JFrame
 			this.mainModel.getArrayFrom(input, length, arg);
 		});
 		this.add(arrayButton);
-		
+
 		arrayEmptyButton = new JButton("空配列生成");	//実行ボタン
 		arrayEmptyButton.setBounds(310, 440, 100, 30);
 		arrayEmptyButton.addActionListener(e->
@@ -288,8 +288,6 @@ public class MainFrame extends JFrame
 		this.add(arrayViewResultLabel);
 
 
-
-
 		/* 7. インスタンス情報(InstanceInfo系) */
 		instanceInfoLabel = new JLabel("インスタンス情報");
 		instanceInfoLabel.setBounds(550, 210, 200, 20);
@@ -307,8 +305,10 @@ public class MainFrame extends JFrame
 		instanceInfoTargetButton = new JButton("取得");
 		instanceInfoTargetButton.setBounds(900, 250, 100, 30);
 		instanceInfoTargetButton.addActionListener(e->
-		{	// 対象インスタンスを取得
-
+		{	
+			// インスタンス一覧の選択中のインデックスを渡す
+			int index = this.instanceViewList.getSelectedIndex();
+			this.mainModel.getInstanceInfoFrom(index);
 		});
 		this.add(instanceInfoTargetButton);
 
@@ -316,7 +316,8 @@ public class MainFrame extends JFrame
 		instanceInfoArrayTargetButton.setBounds(900, 280, 100, 30);
 		instanceInfoArrayTargetButton.addActionListener(e->
 		{	// 対象インスタンス(配列)を取得
-
+			int index = this.arrayViewItemList.getSelectedIndex();
+			this.mainModel.getArrayItemInfoFrom(index);
 		});
 		this.add(instanceInfoArrayTargetButton);
 
@@ -470,7 +471,40 @@ public class MainFrame extends JFrame
 			this.arrayViewItemList.setListData(list.toArray(new String[list.size()]));
 			repaint();
 		});
-
+		// インスタンス一覧からインスタンス情報を引き出したら
+		this.mainModel.setInstanceInfoEvent(e->
+		{
+			// エラー関係
+			String error = this.mainModel.getInstanceInfoError();
+			this.instanceInfoResultLabel.setText(error);
+			// 対象インスタンス名
+			String item = this.mainModel.getTargetInstanceItem();
+			this.instanceInfoTargetField.setText(item);
+			// 対象インスタンスフィールド
+			ArrayList<String> fieldList = this.mainModel.getTargetInstanceFieldList();
+			this.instanceFieldList.setListData(fieldList.toArray(new String[fieldList.size()]));
+			// 対象インスタンスメソッド
+			ArrayList<String> methodList = this.mainModel.getTargetInstanceMethodList();
+			this.instanceMethodList.setListData(methodList.toArray(new String[methodList.size()]));
+			repaint();
+		});
+		// インスタンス一覧の配列の中の要素を引き出したら
+		this.mainModel.setArrayItemInfoEvent(e->
+		{
+			// エラー関係
+			String error = this.mainModel.getArrayItemInfoError();
+			this.instanceInfoResultLabel.setText(error);
+			// 対象インスタンス名+要素名
+			String item = this.mainModel.getTargetInstanceItem();
+			this.instanceInfoTargetField.setText(item);
+			// 対象インスタンスフィールド
+			ArrayList<String> fieldList = this.mainModel.getTargetInstanceFieldList();
+			this.instanceFieldList.setListData(fieldList.toArray(new String[fieldList.size()]));
+			// 対象インスタンスメソッド
+			ArrayList<String> methodList = this.mainModel.getTargetInstanceMethodList();
+			this.instanceMethodList.setListData(methodList.toArray(new String[methodList.size()]));
+			repaint();
+		});
 	}
 
 }
