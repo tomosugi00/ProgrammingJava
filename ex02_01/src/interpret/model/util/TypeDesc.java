@@ -87,7 +87,8 @@ public class TypeDesc
 	{		
 		String[] arguments = args.split(",");
 		ArrayList<Object> resultArgs = new ArrayList<Object>();
-		
+
+		//TODO char型は後回し
 		for(String arg:arguments)
 		{		
 			if(arg.matches("\".*\""))	// "文字列"ならば
@@ -96,25 +97,50 @@ public class TypeDesc
 				//System.out.println("文字列："+argument[1]);
 				resultArgs.add(argument[1]);	// 結果は [ , (引数)] となるのでargument[1]
 			}
+			else if(arg.matches("true")||arg.matches("false"))	// booleanならば(大文字対応しない)
+			{
+				resultArgs.add(Boolean.valueOf(arg));
+			}
 			else if(arg.matches("#[0-9]+"))	//既存インスタンスならば
 			{
 				//仮で文字列
 				//System.out.println("インスタンス："+arg);
 				resultArgs.add("インスタンス");
-				
+
 			}
 			else if(arg.matches("^-?(0|[1-9]\\d*)(\\.\\d+|)$"))	//数字(対応できない表記あり)
 			{
-				//とりあえず
-				if(arg.contains("."))
+				if(arg.contains("."))	//浮動小数点
 				{
-					//System.out.println("数値(浮動小数点)："+arg);
-					resultArgs.add(Double.valueOf(arg));	
+					double val = Double.valueOf(arg);
+					if(val>Float.MIN_NORMAL&&val<Float.MAX_VALUE)
+					{
+						resultArgs.add(Float.valueOf(arg));
+					}
+					else
+					{
+						resultArgs.add(val);	
+					}
 				}
-				else
+				else	//整数
 				{
-					//System.out.println("数値(整数)："+arg);
-					resultArgs.add(Integer.valueOf(arg));
+					long val = Long.valueOf(arg);
+					if(val>Byte.MIN_VALUE&&val<Byte.MAX_VALUE)	//Byte
+					{
+						resultArgs.add(Byte.valueOf(arg));
+					}
+					else if(val>Short.MIN_VALUE&&val<Short.MAX_VALUE)	//short
+					{
+						resultArgs.add(Short.valueOf(arg));
+					}
+					else if(val>Integer.MIN_VALUE&&val<Integer.MAX_VALUE)
+					{
+						resultArgs.add(Integer.valueOf(arg));
+					}
+					else
+					{
+						resultArgs.add(val);
+					}
 				}
 			}
 			else
