@@ -4,6 +4,7 @@ package interpret.model;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,9 @@ public class MainModel
 	private EventHandler arrayChangeEventHandler = new EventHandler();
 	private EventHandler instanceInfoEventHandler = new EventHandler();
 	private EventHandler arrayItemInfoEventHandler = new EventHandler();
+	private EventHandler instanceChangeFieldEventHandler = new EventHandler();
+	private EventHandler instanceExecMethodEventHandler = new EventHandler();
+	private EventHandler instanceGetMethodEventHandler = new EventHandler();
 
 	/* インスタンス保有 */
 	private ArrayList<String> instanceList;		// View用
@@ -31,6 +35,7 @@ public class MainModel
 	private ArrayList<String>arrayInfoList;		// View用。対象配列の要素のリスト。対象配列分だけあればよい。また何度も内容を変えるに注意
 
 	/* 実行対象インスタンス保有 */
+	private Object targetInstance;	//Model用。対象インスタンス
 	private ArrayList<Field> targetInstanceFieldArray;	//Model用。フィールド
 	private ArrayList<Method> targetInstanceMethodArray;	//Model用。メソッド
 	private ArrayList<String> targetInstanceFieldList;		//View用
@@ -49,6 +54,9 @@ public class MainModel
 	private String arrayChangeErrorCode;
 	private String instanceInfoErrorCode;
 	private String arrayItemInfoErrorCode;
+	private String instanceChangeFieldErrorCode;
+	private String instanceExecMethodErrorCode;
+	private String instanceGetMethodErrorCode;
 
 	public MainModel()
 	{
@@ -61,7 +69,9 @@ public class MainModel
 		arrayInfoItem="";
 		arrayTargetIndex=-1;
 		arrayTargetInfo=null;
-		arrayInfoList = 	new ArrayList<String>();
+		arrayInfoList = new ArrayList<String>();
+
+		targetInstance = null;
 
 		constractorErrorCode = "";
 		argumentErrorCode = "";
@@ -71,6 +81,8 @@ public class MainModel
 		arrayChangeErrorCode = "";
 		instanceInfoErrorCode="";
 		arrayItemInfoErrorCode = "";
+		instanceChangeFieldErrorCode = "";
+		instanceGetMethodErrorCode ="";
 	}
 
 	/**
@@ -133,7 +145,7 @@ public class MainModel
 		{
 			try
 			{
-				arguments = TypeDesc.getArgumentFrom(args).toArray();
+				arguments = TypeDesc.getArgumentFrom(new ArrayList<Object>(this.instanceArray),args).toArray();
 			}
 			catch (Exception e)
 			{
@@ -147,6 +159,7 @@ public class MainModel
 		/* インスタンス作成 */
 		try
 		{
+			//System.out.printf("%s\n", arguments.getClass().isPrimitive());
 			Object obj = ctor.newInstance(arguments);
 
 			instanceArray.add(obj);
@@ -193,7 +206,7 @@ public class MainModel
 			if(!arg.isEmpty())
 			{
 
-				initials = TypeDesc.getArgumentFrom(arg);
+				initials = TypeDesc.getArgumentFrom(new ArrayList<Object>(this.instanceArray),arg);
 				if(initials==null)
 				{
 					this.arrayErrorCode = "フィールドに不正な値があります";
@@ -334,7 +347,7 @@ public class MainModel
 		Object obj = null;
 		try
 		{
-			obj = TypeDesc.getArgumentFrom(value).toArray();
+			obj = TypeDesc.getArgumentFrom(new ArrayList<Object>(this.instanceArray),value).toArray();
 		}
 		catch (Exception e)
 		{
@@ -403,6 +416,7 @@ public class MainModel
 		Class<?> cls = obj.getClass();
 
 		//対象インスタンス表示
+		this.targetInstance = obj;
 		this.targetInstanceItem = instanceList.get(index);
 
 		//フィールド取得
@@ -425,6 +439,10 @@ public class MainModel
 	}
 
 
+	/**
+	 * 右側：選択中の配列要素のフィールドとメソッドを取得
+	 * @param index
+	 */
 	public void getArrayItemInfoFrom(int index)
 	{
 		//初期化
@@ -466,6 +484,7 @@ public class MainModel
 		Class<?> targetCls = target.getClass();
 
 		//対象インスタンス表示
+		this.targetInstance = target;
 		this.targetInstanceItem = arrayInfoList.get(index);
 
 		//フィールド取得
@@ -485,6 +504,185 @@ public class MainModel
 		this.arrayItemInfoErrorCode = "OK";
 		arrayItemInfoEventHandler.broadcast(null);
 
+	}
+
+	/**
+	 * 右側：対象インスタンスの
+	 * @param index
+	 * @param value
+	 */
+	public void setValueToField(int index,String value)
+	{
+		// 初期化
+		this.instanceErrorCode = "";
+
+		if(index<0)
+		{
+			this.instanceChangeFieldErrorCode = "フィールドが選択されていません";
+			instanceChangeFieldEventHandler.broadcast(null);
+			return;
+		}
+
+		Field field = this.targetInstanceFieldArray.get(index);
+		field.setAccessible(true);
+
+		Object obj = null;
+		try
+		{
+			obj = TypeDesc.getArgumentFrom(new ArrayList<Object>(this.instanceArray),value).toArray();
+		}
+		catch (Exception e)
+		{
+			this.instanceChangeFieldErrorCode = "フィールドに不正な値があります";
+			instanceChangeFieldEventHandler.broadcast(null);
+			return;
+		}
+		if(Array.getLength(obj)!=1)
+		{
+			//TODO 複数変える場合の対応
+			this.instanceChangeFieldErrorCode = "フィールドの値を1つにしてください";
+			instanceChangeFieldEventHandler.broadcast(null);
+			return;
+		}
+
+		try
+		{
+			Object val = Array.get(obj, 0);	//最初の要素
+			field.set(this.targetInstance, val);
+			this.instanceChangeFieldErrorCode = "OK";
+			this.instanceErrorCode = val.toString();
+			instanceChangeFieldEventHandler.broadcast(null);
+		}
+		catch (IllegalArgumentException e)
+		{
+			this.instanceChangeFieldErrorCode = "値の型が不正です";
+			instanceChangeFieldEventHandler.broadcast(null);
+			return;
+		}
+		catch (IllegalAccessException e)
+		{
+			this.instanceChangeFieldErrorCode = "内部エラー：アクセスできません";
+			instanceChangeFieldEventHandler.broadcast(null);
+			return;
+		}
+	}
+
+	public void execMethod(int index,String arg)
+	{
+		// 初期化
+		this.instanceErrorCode = "";
+
+		if(index<0)
+		{
+			this.instanceExecMethodErrorCode = "メソッドが選択されていません";
+			instanceExecMethodEventHandler.broadcast(null);
+			return;
+		}
+
+		Method method = this.targetInstanceMethodArray.get(index);
+		method.setAccessible(true);
+
+		Object[] obj = null;
+		if(!arg.isEmpty())	//空の場合は無視する
+		{
+			try
+			{
+				obj = TypeDesc.getArgumentFrom(new ArrayList<Object>(this.instanceArray),arg).toArray();
+			}
+			catch (Exception e)
+			{
+				this.instanceExecMethodErrorCode = "引数に不正な値があります";
+				instanceExecMethodEventHandler.broadcast(null);
+				return;
+			}
+		}
+
+		try
+		{
+			Object result = method.invoke(this.targetInstance, obj);
+			this.instanceExecMethodErrorCode = "OK";
+			this.instanceErrorCode = result.toString();
+			instanceExecMethodEventHandler.broadcast(null);
+		}
+		catch (IllegalArgumentException e)
+		{
+			this.instanceExecMethodErrorCode = "値の型が不正です";
+			instanceExecMethodEventHandler.broadcast(null);
+			return;
+		}
+		catch (IllegalAccessException e)
+		{
+			this.instanceExecMethodErrorCode = "内部エラー：アクセスできません";
+			instanceExecMethodEventHandler.broadcast(null);
+			return;
+		}
+		catch (InvocationTargetException e)
+		{
+			this.instanceExecMethodErrorCode = "選択メソッド内部でエラーが発生しました";
+			instanceExecMethodEventHandler.broadcast(null);
+			return;
+		}
+	}
+
+	public void getInstanceFromMethod(int index,String arg)
+	{
+		// 初期化
+		this.instanceErrorCode = "";
+
+		if(index<0)
+		{
+			this.instanceGetMethodErrorCode = "メソッドが選択されていません";
+			instanceGetMethodEventHandler.broadcast(null);
+			return;
+		}
+
+		Method method = this.targetInstanceMethodArray.get(index);
+		method.setAccessible(true);
+
+		Object[] obj = null;
+		if(!arg.isEmpty())	//空の場合は無視する
+		{
+			try
+			{
+				obj = TypeDesc.getArgumentFrom(new ArrayList<Object>(this.instanceArray),arg).toArray();
+			}
+			catch (Exception e)
+			{
+				this.instanceGetMethodErrorCode = "引数に不正な値があります";
+				instanceGetMethodEventHandler.broadcast(null);
+				return;
+			}
+		}
+
+		try
+		{
+			Object result = method.invoke(this.targetInstance, obj);
+
+			this.instanceArray.add(result);
+			this.instanceList.add(String.format("#%d：%s", instanceList.size(),result.getClass().getSimpleName()));	//その時のサイズ = 今回のインデックス
+
+			this.instanceGetMethodErrorCode = "OK";
+			this.instanceErrorCode = result.toString();
+			instanceGetMethodEventHandler.broadcast(null);
+		}
+		catch (IllegalArgumentException e)
+		{
+			this.instanceGetMethodErrorCode = "値の型が不正です";
+			instanceGetMethodEventHandler.broadcast(null);
+			return;
+		}
+		catch (IllegalAccessException e)
+		{
+			this.instanceGetMethodErrorCode = "内部エラー：アクセスできません";
+			instanceGetMethodEventHandler.broadcast(null);
+			return;
+		}
+		catch (InvocationTargetException e)
+		{
+			this.instanceGetMethodErrorCode = "選択メソッド内部でエラーが発生しました";
+			instanceGetMethodEventHandler.broadcast(null);
+			return;
+		}
 	}
 
 
@@ -516,6 +714,18 @@ public class MainModel
 	public void setArrayItemInfoEvent(Consumer<EventArgs> listener)
 	{
 		this.arrayItemInfoEventHandler.add(listener);
+	}
+	public void setInstanceChangeFieldEvent(Consumer<EventArgs> listener)
+	{
+		this.instanceChangeFieldEventHandler.add(listener);
+	}
+	public void setInstanceExecMethodEvent(Consumer<EventArgs> listener)
+	{
+		this.instanceExecMethodEventHandler.add(listener);
+	}
+	public void setInstanceGetMethodEvent(Consumer<EventArgs> listener)
+	{
+		this.instanceGetMethodEventHandler.add(listener);
 	}
 
 	/* プロパティ */
@@ -581,5 +791,17 @@ public class MainModel
 	public String getArrayItemInfoError()
 	{
 		return this.arrayItemInfoErrorCode;
+	}
+	public String getInstanceChangeFieldError()
+	{
+		return this.instanceChangeFieldErrorCode;
+	}
+	public String getInstanceExecMethodError()
+	{
+		return this.instanceExecMethodErrorCode;
+	}
+	public String getInstanceGetMethodError()
+	{
+		return this.instanceGetMethodErrorCode;
 	}
 }

@@ -83,7 +83,7 @@ public class TypeDesc
 	 * @throws Exception 
 	 * 
 	 */
-	public static ArrayList<Object> getArgumentFrom(String args)
+	public static ArrayList<Object> getArgumentFrom(ArrayList<Object> list, String args)
 	{		
 		String[] arguments = args.split(",");
 		ArrayList<Object> resultArgs = new ArrayList<Object>();
@@ -97,6 +97,12 @@ public class TypeDesc
 				//System.out.println("文字列："+argument[1]);
 				resultArgs.add(argument[1]);	// 結果は [ , (引数)] となるのでargument[1]
 			}
+			else if(arg.matches("\'.*\'"))	// '文字'ならば
+			{
+				String[] argument = arg.split("\'");
+				//System.out.println("文字列："+argument[1]);
+				resultArgs.add(argument[1].toCharArray()[0]);	// 結果は [ , (引数)] となるのでargument[1]
+			}
 			else if(arg.matches("true")||arg.matches("false"))	// booleanならば(大文字対応しない)
 			{
 				resultArgs.add(Boolean.valueOf(arg));
@@ -104,9 +110,16 @@ public class TypeDesc
 			else if(arg.matches("#[0-9]+"))	//既存インスタンスならば
 			{
 				//仮で文字列
-				//System.out.println("インスタンス："+arg);
-				resultArgs.add("インスタンス");
-
+				String[] argument = arg.split("#");
+				int index = Integer.valueOf(argument[1]);
+				try
+				{
+					resultArgs.add(list.get(index));
+				}
+				catch (Exception e)		//TODO きちんとした例外処理
+				{
+					return null;
+				}
 			}
 			else if(arg.matches("^-?(0|[1-9]\\d*)(\\.\\d+|)$"))	//数字(対応できない表記あり)
 			{

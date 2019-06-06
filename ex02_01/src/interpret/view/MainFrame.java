@@ -350,7 +350,9 @@ public class MainFrame extends JFrame
 		instanceFieldValueButton.setBounds(900, 470, 100, 30);
 		instanceFieldValueButton.addActionListener(e->
 		{	// 対象インスタンスのフィールド内容修正
-
+			int index = this.instanceFieldList.getSelectedIndex();
+			String value = this.instanceFieldValueField.getText();
+			this.mainModel.setValueToField(index, value);
 		});
 		this.add(instanceFieldValueButton);
 
@@ -382,7 +384,9 @@ public class MainFrame extends JFrame
 		instanceMethodArgumentButton.setBounds(900, 660, 100, 30);
 		instanceMethodArgumentButton.addActionListener(e->
 		{	// 対象インスタンスのメソッド実行
-
+			int index = this.instanceMethodList.getSelectedIndex();
+			String arg = this.instanceMethodArgumentField.getText();
+			this.mainModel.execMethod(index, arg);
 		});
 		this.add(instanceMethodArgumentButton);
 
@@ -390,7 +394,9 @@ public class MainFrame extends JFrame
 		instanceMethodExeButton.setBounds(900, 690, 100, 30);
 		instanceMethodExeButton.addActionListener(e->
 		{	// 対象インスタンスのメソッド実行+結果をインスタンスとして取得
-
+			int index = this.instanceMethodList.getSelectedIndex();
+			String arg = this.instanceMethodArgumentField.getText();
+			this.mainModel.getInstanceFromMethod(index, arg);
 		});
 		this.add(instanceMethodExeButton);
 
@@ -503,6 +509,35 @@ public class MainFrame extends JFrame
 			// 対象インスタンスメソッド
 			ArrayList<String> methodList = this.mainModel.getTargetInstanceMethodList();
 			this.instanceMethodList.setListData(methodList.toArray(new String[methodList.size()]));
+			repaint();
+		});
+		this.mainModel.setInstanceChangeFieldEvent(e->
+		{
+			// エラー関係
+			String error = this.mainModel.getInstanceChangeFieldError();
+			this.instanceFieldResultLabel.setText(error);
+			String result = this.mainModel.getInstanceError();
+			this.resultArea.setText(result);
+			repaint();
+		});
+		this.mainModel.setInstanceExecMethodEvent(e->
+		{
+			// エラー関係
+			String error = this.mainModel.getInstanceExecMethodError();
+			this.instanceMethodResultLabel.setText(error);
+			String result = this.mainModel.getInstanceError();
+			this.resultArea.setText(result);
+			repaint();
+		});
+		this.mainModel.setInstanceGetMethodEvent(e->
+		{
+			// エラー関係
+			String error = this.mainModel.getInstanceGetMethodError();
+			this.instanceMethodResultLabel.setText(error);
+			ArrayList<String> list = this.mainModel.getInstanceList();
+			this.instanceViewList.setListData(list.toArray(new String[list.size()]));
+			String result = this.mainModel.getInstanceError();
+			this.resultArea.setText(result);
 			repaint();
 		});
 	}
